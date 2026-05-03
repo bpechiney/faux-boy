@@ -29,9 +29,113 @@ sub-instruction timing exploits run the way they did on real silicon.
 - **Phase 1 — DMG.** Original 1989 Game Boy. Primary target.
 - **Phase 2 — CGB (stretch).** Game Boy Color, including double-speed mode,
   HDMA, and CGB palettes. Tackled once DMG is rock-solid.
+- **Phase 3 — link-cable peripherals (stretch).** Full two-instance + networked
+  link cable. Phase 1 ships a null-peer/loopback so games that probe the link
+  don't soft-lock; the lockstep scheduler for real link comes later.
 - Out of scope: SGB, GBA, pocket variants.
 
 Roadmap detail lives in the project meta-issue (link TBD).
+
+## Cartridge & peripheral support
+
+Hardware fidelity doesn't stop at the SoC. The cart talks to the CPU through
+a memory-bank controller (MBC), and a handful of carts ship extra silicon —
+RTCs, rumble motors, tilt sensors. Plus the link port has its own ecosystem.
+
+### Memory-bank controllers
+
+| MBC | Caps | Special features | Representative games |
+|---|---|---|---|
+| None | 32KB ROM | Direct map, no banking | Tetris, Dr. Mario |
+| MBC1 | ≤2MB ROM / 32KB RAM | Mode-bit quirk that re-uses upper-bank bits for ROM-or-RAM banking | Pokemon R/B, Super Mario Land |
+| MBC2 | ≤256KB ROM | Built-in 512×4-bit RAM (nibbles, not bytes) | Mario Land 2: 6 Golden Coins |
+| MBC3 | ≤2MB ROM / 32KB RAM | Optional **RTC** — battery-backed clock for day/night cycles | Pokemon Gold/Silver/Crystal, Harvest Moon GB |
+| MBC5 | ≤8MB ROM / 128KB RAM | Optional **rumble motor**. Standard late-era controller — used in many DMG-compatible carts, not CGB-tied | Pokemon Pinball, Wario Land II, Donkey Kong Country |
+| MBC7 | 2MB ROM | 256-byte EEPROM + 2-axis **tilt sensor** (ADXL202) | Kirby Tilt 'n' Tumble |
+
+All Phase 1. HuC1 / HuC3 / MMM01 (rare third-party) and the Game Boy Camera
+cartridge are out of scope.
+
+### Console & peripherals
+
+- **Boot ROM execution.** The real Nintendo boot ROM runs at startup —
+  scrolling logo, chime, register handoff at `$0100` — instead of faking the
+  post-boot register state. Required for some Mooneye `boot_hwio` tests and
+  for CGB titles that sniff handoff registers to pick a palette.
+- **Game Boy Printer.** Receive-side serial protocol, decode the tile
+  bitmap, write a PNG. Pokemon Yellow/Crystal Pokedex pages and stickers are
+  golden-tested against reference output.
+- **Link cable.** Phase 1 ships a null-peer/loopback — the SB/SC registers
+  acknowledge cleanly so games that probe the link don't soft-lock.
+  Cycle-locked two-instance and networked link are Phase 3.
+
+## Built for an AI-driven dev loop
+
+faux-boy is being built *with* an AI agent. That inverts the usual emulator
+tooling priorities — text > GUI, deterministic > interactive, diff-friendly >
+visually pretty. The dev loop is **change → run a deterministic test → diff
+text output → spot the divergence → fix.** Everything below serves that loop.
+
+- **Headless, deterministic CLI.** Same input + same ROM = byte-identical
+  output. No SDL window, no audio device, no walltime randomness in headless
+  mode.
+- **Structured state dumps.** JSON of CPU / PPU / APU / timer / memory at
+  any T-cycle boundary.
+- **T-cycle tracelog.** Every executed instruction with cycle counter, PC,
+  opcode mnemonic, registers, and memory reads/writes — stable text,
+  greppable, bisectable.
+- **Reference-trace bisection.** Matching tracelog format with SameBoy and
+  Gambatte; binary-search for the first divergent T-cycle. Converts "the
+  screen looks wrong" into "DIV increments at T-cycle 4194 instead of 4196."
+- **Structured JSON test-ROM harness output.** Not just `PASS` / `FAIL` — a
+  per-test record with expected vs actual register state, so iteration loops
+  can read it directly.
+- **Input record + replay.** Capture button-press timelines, replay
+  deterministically. Turns one-off bugs into permanent regression tests.
+- **Snapshot / golden tests.** Load state, run N cycles, assert state matches
+  a frozen snapshot. Failures are diff-readable.
+- **Symbolic disassembly + `.sym` files.** Tracelogs show
+  `Main:gameLoop+0x12` instead of `0x0238`.
+- **Scriptable breakpoints.** `--break-at PC=0x1234 --then dump-state` —
+  CLI-driven, composable in shell pipelines.
+
+Explicitly **out of scope**: GUI debugger, visual VRAM/sprite/palette
+viewers, audio scope, cheat injection (GameShark/Game Genie). They cost
+engineering time without serving the AI dev loop.
+
+## User experience
+
+### Phase 1
+
+- **Header-scanned ROM library.** Point faux-boy at a directory; it parses
+  cart headers (title, MBC, CGB flag, RAM size) and presents a sortable,
+  searchable list with last-played tracking. Double-click to launch.
+- Save states (named slots).
+- Screenshots.
+- Fast-forward + slow-motion.
+- Configurable keyboard + gamepad.
+- Custom DMG palettes (4-shade picker).
+
+### Phase 2
+
+- **Rewind.** Hold a button, scrub back through the last N seconds. Beyond
+  user value, it's a forcing function: rewind only works if save-state
+  serialization is bit-for-bit complete and deterministic — which is exactly
+  what the snapshot, replay, and reference-trace bisection machinery rely on.
+- **A/V recording.** PNG sequence / WAV / MP4 capture for demos and bug
+  reports.
+
+Out of scope: shaders, LCD-grid effects, border art, per-game config.
+
+## Engineering
+
+- **Fuzz testing.** Two flavors: random-byte ROM fuzz (generate garbage cart
+  data, run for N cycles, assert no crash) and random-input fuzz on real
+  ROMs (mash buttons to surface PPU/timer edge cases no test ROM hits).
+- **Multi-platform CI.** GitHub Actions running the build + the full test
+  ROM harness on macOS, Linux, and Windows. The Nix flake (see *Build & run*)
+  pins the same toolchain locally as CI uses, so `just check` reproduces the
+  pipeline byte-for-byte.
 
 ## Test ROM compliance
 
