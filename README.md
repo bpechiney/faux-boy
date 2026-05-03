@@ -1,4 +1,4 @@
-# faux-boy
+# Faux Boy
 
 A cycle-accurate Game Boy emulator, written in Zig.
 
@@ -8,7 +8,7 @@ A cycle-accurate Game Boy emulator, written in Zig.
 
 ## About
 
-faux-boy is a from-scratch Game Boy emulator written in Zig, built as a
+Faux Boy is a from-scratch Game Boy emulator written in Zig, built as a
 craft/learning project. The goal is full hardware fidelity, not raw
 performance — the kind of accuracy that lets mid-frame raster tricks and
 sub-instruction timing exploits run the way they did on real silicon.
@@ -82,7 +82,7 @@ cartridge are out of scope.
 
 ### ROM Library
 
-Point it at a folder of ROMs and faux-boy builds a searchable list — title,
+Point it at a folder of ROMs and Faux Boy builds a searchable list — title,
 MBC, CGB flag, last played. Double-click to launch. No cover-art rabbit
 hole, just a fast picker.
 
@@ -129,7 +129,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Acknowledgments
 
-faux-boy stands on the shoulders of the gbdev community. Particular thanks to
+Faux Boy stands on the shoulders of the gbdev community. Particular thanks to
 the authors and maintainers of Pan Docs, the Cycle-Accurate Game Boy Docs, and
 the test ROM suites listed above — without those resources, accurate Game Boy
 emulation outside Nintendo would not be tractable.

@@ -1,12 +1,12 @@
 # Development
 
-This document covers the developer experience of faux-boy: the AI-driven dev
+This document covers the developer experience of Faux Boy: the AI-driven dev
 loop the project is built around, plus how to build and run it locally. See
 [README.md](README.md) for the project overview and feature scope.
 
 ## Built for an AI-Driven Dev Loop
 
-faux-boy is being built *with* an AI agent. That inverts the usual emulator
+Faux Boy is being built *with* an AI agent. That inverts the usual emulator
 tooling priorities — text > GUI, deterministic > interactive, diff-friendly >
 visually pretty. The dev loop is **change → run a deterministic test → diff
 text output → spot the divergence → fix.** Everything below serves that loop.
@@ -50,7 +50,7 @@ engineering time without serving the AI dev loop.
 
 ## Build & Run
 
-faux-boy targets Zig **0.16.0**. The repo ships a Nix flake that pins the
+Faux Boy targets Zig **0.16.0**. The repo ships a Nix flake that pins the
 toolchain and a `justfile` for the common verbs.
 
 ```sh
