@@ -1,4 +1,4 @@
-# faux-boy
+# Faux Boy
 
 A cycle-accurate Game Boy emulator, written in Zig.
 
@@ -8,32 +8,91 @@ A cycle-accurate Game Boy emulator, written in Zig.
 
 ## About
 
-faux-boy is a from-scratch Game Boy emulator written in Zig, built as a
+Faux Boy is a from-scratch Game Boy emulator written in Zig, built as a
 craft/learning project. The goal is full hardware fidelity, not raw
 performance — the kind of accuracy that lets mid-frame raster tricks and
 sub-instruction timing exploits run the way they did on real silicon.
 
-## Accuracy goals
+## Accuracy Goals
 
-- **T-cycle accurate.** Every component (CPU, PPU, APU, Timer, DMA) advances
-  per T-cycle (4.194304 MHz), interleaved correctly within a single
-  instruction.
-- **Pixel-FIFO PPU.** The PPU is modeled as a per-dot pixel FIFO — not a
-  scanline renderer — so mid-scanline writes to LCDC, SCX/SCY, and palettes
-  produce the correct visual output.
-- **Test-ROM driven.** Accuracy is validated against published hardware test
-  suites (see below), all run unattended in the harness.
+### T-Cycle Accurate
 
-## Hardware scope
+Every component — CPU, PPU, APU, timer, DMA — advances one T-cycle at a
+time at 4.194304 MHz, correctly interleaved inside each instruction.
+Slow-but-faithful, not fast-and-fudged.
 
-- **Phase 1 — DMG.** Original 1989 Game Boy. Primary target.
-- **Phase 2 — CGB (stretch).** Game Boy Color, including double-speed mode,
-  HDMA, and CGB palettes. Tackled once DMG is rock-solid.
-- Out of scope: SGB, GBA, pocket variants.
+### Pixel-FIFO PPU
+
+The PPU runs as a per-dot pixel FIFO, not a scanline renderer. That's what
+lets mid-scanline writes to LCDC, SCX/SCY, and palettes produce the same
+demoscene-grade tricks they do on real silicon.
+
+### Test-ROM Driven
+
+Accuracy isn't a vibe. Every claim gets validated against published
+hardware test suites (see the table below), all run unattended in the
+harness — pass/fail is data, not opinion.
+
+## Hardware Scope
+
+- **DMG.** Original 1989 Game Boy. The primary target.
+- **CGB (stretch).** Game Boy Color, including double-speed mode, HDMA, and
+  CGB palettes. Tackled once DMG is rock-solid.
+- Out of scope: SGB, GBA, pocket variants, multiplayer link cable.
 
 Roadmap detail lives in the project meta-issue (link TBD).
 
-## Test ROM compliance
+## Cartridge & Peripheral Support
+
+Hardware fidelity doesn't stop at the SoC. The cart talks to the CPU through
+a memory-bank controller (MBC), and a handful of carts ship extra silicon —
+RTCs, rumble motors, tilt sensors. Plus the link port has its own ecosystem.
+
+### Memory-Bank Controllers
+
+| MBC | Caps | Special features | Representative games |
+|---|---|---|---|
+| None | 32KB ROM | Direct map, no banking | Tetris, Dr. Mario |
+| MBC1 | ≤2MB ROM / 32KB RAM | Mode-bit quirk that re-uses upper-bank bits for ROM-or-RAM banking | Pokemon R/B, Super Mario Land |
+| MBC2 | ≤256KB ROM | Built-in 512×4-bit RAM (nibbles, not bytes) | Mario Land 2: 6 Golden Coins |
+| MBC3 | ≤2MB ROM / 32KB RAM | Optional **RTC** — battery-backed clock for day/night cycles | Pokemon Gold/Silver/Crystal, Harvest Moon GB |
+| MBC5 | ≤8MB ROM / 128KB RAM | Optional **rumble motor**. Standard late-era controller — used in many DMG-compatible carts, not CGB-tied | Pokemon Pinball, Wario Land II, Donkey Kong Country |
+| MBC7 | 2MB ROM | 256-byte EEPROM + 2-axis **tilt sensor** (ADXL202) | Kirby Tilt 'n' Tumble |
+
+All supported. HuC1 / HuC3 / MMM01 (rare third-party) and the Game Boy
+Camera cartridge are out of scope.
+
+### Console & Peripherals
+
+- **Boot ROM execution.** The real Nintendo boot ROM runs at startup —
+  scrolling logo, chime, register handoff at `$0100` — instead of faking the
+  post-boot register state. Required for some Mooneye `boot_hwio` tests and
+  for CGB titles that sniff handoff registers to pick a palette.
+- **Game Boy Printer.** Receive-side serial protocol, decode the tile
+  bitmap, write a PNG. Pokemon Yellow/Crystal Pokedex pages and stickers are
+  golden-tested against reference output.
+
+## User Experience
+
+### ROM Library
+
+Point it at a folder of ROMs and Faux Boy builds a searchable list — title,
+MBC, CGB flag, last played. Double-click to launch. No cover-art rabbit
+hole, just a fast picker.
+
+### Rewind
+
+Hold a button, scrub back through the last few seconds. Life-saver for
+cruel old platformers — and sneaky correctness pressure on the rest of the
+emulator, since rewind only works if state serialization is actually
+bit-for-bit complete.
+
+### A/V Recording
+
+Capture gameplay as a PNG sequence, WAV, or MP4. For demos, tweets, and bug
+reports where "look at this" beats "I swear there's a glitch."
+
+## Test ROM Compliance
 
 | Suite | Coverage | Status |
 |---|---|---|
@@ -47,30 +106,13 @@ Roadmap detail lives in the project meta-issue (link TBD).
 
 Pass/fail is detected in three ways depending on suite:
 
-- **Serial port** (Blargg) — link-cable writes are scraped for `Passed`/`Failed`.
+- **Serial port** (Blargg) — bytes written to the serial port are scraped for `Passed`/`Failed`.
 - **Magic breakpoint** (Mooneye, SameSuite, others) — `LD B, B` halts the harness; CPU register pattern indicates pass/fail.
 - **Framebuffer diff** (Acid2, Mealybug) — output frame compared byte-for-byte against a reference PNG.
 
-## Build & run
+## Development
 
-faux-boy targets Zig **0.16.0**. The repo ships a Nix flake that pins the
-toolchain and a `justfile` for the common verbs.
-
-```sh
-# Enter the pinned dev shell (Zig 0.16.0, just, gh, jq)
-nix develop
-
-# Inside the shell:
-just build         # zig build
-just run <rom>     # zig build run -- <rom>
-just test          # zig build test
-just check         # CI parity: build + run all tests inside the dev shell
-just fmt           # zig fmt src/ build.zig
-just fmt-check     # CI parity: verify formatting without rewriting
-```
-
-Without Nix: install Zig 0.16.0 manually and run `just …` (or `zig build …`)
-directly.
+See [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## References
 
@@ -81,7 +123,7 @@ directly.
 
 ## Acknowledgments
 
-faux-boy stands on the shoulders of the gbdev community. Particular thanks to
+Faux Boy stands on the shoulders of the gbdev community. Particular thanks to
 the authors and maintainers of Pan Docs, the Cycle-Accurate Game Boy Docs, and
 the test ROM suites listed above — without those resources, accurate Game Boy
 emulation outside Nintendo would not be tractable.

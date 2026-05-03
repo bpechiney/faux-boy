@@ -1,5 +1,5 @@
 {
-  description = "faux-boy development environment";
+  description = "Faux Boy development environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
