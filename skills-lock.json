@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "skills": {
+    "diagnose": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/diagnose/SKILL.md",
+      "computedHash": "99ad485a5872991d69b7f4729758a984b25b764db7b56993141433f699983237"
+    },
+    "emudev": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/emudev/SKILL.md",
+      "computedHash": "c7fb4807e6b97d77fb015768661b4488e9c3c69c9d067488d1947394e5edd57f"
+    },
+    "emulator-code-review": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/emulator-code-review/SKILL.md",
+      "computedHash": "99f70efb40cc5820b78c854362b9a6af70637fd04b87d547d1a8bb3413548ee5"
+    },
+    "emulator-diagnosis": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/emulator-diagnosis/SKILL.md",
+      "computedHash": "d74c70b858e28f2e0260b9da6c385bea555c7966d462d3a9d0cf3077c7653b67"
+    },
+    "git-guardrails-claude-code": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/misc/git-guardrails-claude-code/SKILL.md",
+      "computedHash": "53a1de29d2b76481202608376fa4a20a8bd7e65b0b8a907a8c9578e629cf313f"
+    },
+    "grill-me": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea"
+    },
+    "grill-with-docs": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
+      "computedHash": "31a5b1ae116558bf7d3f633f442835f54bd7645923d4f45c7823e52a97317666"
+    },
+    "improve-codebase-architecture": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "computedHash": "2839667172a700d7d1459c88df01c4d4d21b6cc36b4edf416d532f0c73630424"
+    },
+    "setup-matt-pocock-skills": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "computedHash": "3a32f8f1ed8160c9d286a2aabe88ee9b884c6f3f88a7a6c47b7d5d552c959587"
+    },
+    "tdd": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/tdd/SKILL.md",
+      "computedHash": "1d3e8fd1e769eff39b2c28223453cf615d468ce208beb936efd4c5b3e16ae18f"
+    },
+    "to-issues": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/to-issues/SKILL.md",
+      "computedHash": "73a91f30784523aa59ec9b02769576ebfc738e2cd5ad8f6441076031f0a5d5ac"
+    },
+    "to-prd": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/to-prd/SKILL.md",
+      "computedHash": "fd8c259f9c44eff08e29a1a2fc71a806a3568d279a55387a361f78620b10f2aa"
+    },
+    "triage": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/triage/SKILL.md",
+      "computedHash": "2b6efb6da12d92551772fcc04acf331f4e0e6f7bd9d4cb23ce0b301e0b128feb"
+    },
+    "write-a-skill": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/write-a-skill/SKILL.md",
+      "computedHash": "b44d8aab2ead83c716e01af4c9a24ccc4575ce70ad58ec4f1749fb88c9cc82ba"
+    },
+    "zoom-out": {
+      "source": "bpechiney/emulator-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/zoom-out/SKILL.md",
+      "computedHash": "8357aeaece3b709c442eab67e64b86844e05e2f1ea95b109565eba50b6def36e"
+    }
+  }
+}
