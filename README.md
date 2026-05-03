@@ -113,11 +113,7 @@ Pass/fail is detected in three ways depending on suite:
 
 ## Development
 
-faux-boy is built for an AI-driven dev loop — text-first tracelogs,
-deterministic state dumps, reference-trace bisection — over GUI debuggers.
-See [DEVELOPMENT.md](DEVELOPMENT.md) for the full toolchain story,
-engineering practices (fuzz testing, multi-platform CI), and how to build
-and run faux-boy locally.
+See [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## References
 
