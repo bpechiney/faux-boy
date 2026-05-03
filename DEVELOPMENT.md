@@ -48,6 +48,64 @@ engineering time without serving the AI dev loop.
   [Build & Run](#build--run)) pins the same toolchain locally as CI uses, so
   `just check` reproduces the pipeline byte-for-byte.
 
+## Security
+
+Faux Boy treats every byte that crosses into the emulator from outside as
+adversarial input. ROMs come from the internet, save files come from disk,
+and any of them can be malformed, attacker-crafted, or just plain corrupted.
+The core has to handle that without crashing, looping, or invoking
+undefined behavior.
+
+This is **input-robustness security, not production hardening.** No
+sandboxing, no code signing, no TLS — just "don't crash on a hostile ROM."
+
+### Untrusted Surfaces
+
+- **Cartridge ROM bytes.** Header lies about size, MBC writes carry
+  attacker-controlled bank indices.
+- **Battery RAM (`.sav` files).** On-disk file. Wrong size, swapped between
+  carts, deliberately corrupted.
+- **Save-state / snapshot files.** Same disk threat. Version mismatch,
+  malformed structure, wrong cart fingerprint.
+- **RTC state (MBC3).** Battery-backed clock data inside the cart RAM blob.
+- **Boot ROM image.** User-provided (we never ship Nintendo's). Wrong size,
+  corrupted, or swapped between DMG and CGB.
+- **`.sym` symbol files.** A malformed line shouldn't crash the disassembler.
+- **Tracelog / state-dump output paths.** User-supplied destinations get
+  path-traversal validation; `--trace-out=../etc/passwd` is rejected.
+
+### Engineering Rules
+
+- **Checked arithmetic at boundaries.** `std.math.cast` for narrowing,
+  `std.math.add` / `sub` / `mul` for size math. `@intCast` and `@truncate`
+  are unchecked in `ReleaseFast` and `ReleaseSmall` — avoid on
+  input-derived values.
+- **Bounds-validate slice access on hot paths.** The most likely OOB
+  sources are cart-header size fields the ROM lies about and MBC bank
+  indices the ROM controls via memory writes.
+- **Explicit endian reads.** `std.mem.readInt(u16, bytes, .little)` —
+  never cast-and-pray on byte alignment.
+- **Fail closed on save states.** Version mismatch, malformed structure,
+  or cross-cart load → clean error, not silent state corruption.
+
+### Fuzz as a Security Regression
+
+The fuzz harness (see [Engineering](#engineering)) doubles as the standing
+test that the rules above hold:
+
+- Random-byte cart fuzz: garbage bytes, run for N cycles, assert no panic /
+  UB / unbounded memory growth / infinite loop.
+- Random-input fuzz on real ROMs: catches state-machine deadends in the
+  CPU/PPU under malformed cart RAM writes.
+- Save-state fuzz: random bytes loaded as a state, assert clean rejection.
+
+### Out of Scope
+
+- Process sandboxing (seccomp / App Sandbox / etc.)
+- Code-signing release binaries
+- Supply-chain auditing beyond Nix flake hash-pinning
+- Formal CVE disclosure process
+
 ## Build & Run
 
 Faux Boy targets Zig **0.16.0**. The repo ships a Nix flake that pins the

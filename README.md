@@ -38,10 +38,7 @@ harness — pass/fail is data, not opinion.
 - **DMG.** Original 1989 Game Boy. The primary target.
 - **CGB (stretch).** Game Boy Color, including double-speed mode, HDMA, and
   CGB palettes. Tackled once DMG is rock-solid.
-- **Link-cable peripherals (stretch).** Full two-instance + networked link
-  cable. A null-peer/loopback ships with the core so games that probe the
-  link don't soft-lock; the lockstep scheduler for real link comes later.
-- Out of scope: SGB, GBA, pocket variants.
+- Out of scope: SGB, GBA, pocket variants, multiplayer link cable.
 
 Roadmap detail lives in the project meta-issue (link TBD).
 
@@ -74,9 +71,6 @@ Camera cartridge are out of scope.
 - **Game Boy Printer.** Receive-side serial protocol, decode the tile
   bitmap, write a PNG. Pokemon Yellow/Crystal Pokedex pages and stickers are
   golden-tested against reference output.
-- **Link cable.** A null-peer/loopback — the SB/SC registers acknowledge
-  cleanly so games that probe the link don't soft-lock. Cycle-locked
-  two-instance and networked link are stretch goals.
 
 ## User Experience
 
@@ -112,7 +106,7 @@ reports where "look at this" beats "I swear there's a glitch."
 
 Pass/fail is detected in three ways depending on suite:
 
-- **Serial port** (Blargg) — link-cable writes are scraped for `Passed`/`Failed`.
+- **Serial port** (Blargg) — bytes written to the serial port are scraped for `Passed`/`Failed`.
 - **Magic breakpoint** (Mooneye, SameSuite, others) — `LD B, B` halts the harness; CPU register pattern indicates pass/fail.
 - **Framebuffer diff** (Acid2, Mealybug) — output frame compared byte-for-byte against a reference PNG.
 
