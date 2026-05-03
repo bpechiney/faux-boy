@@ -71,27 +71,23 @@ cartridge are out of scope.
 
 ## User Experience
 
-### Phase 1
+### ROM Library
 
-- **Header-scanned ROM library.** Point faux-boy at a directory; it parses
-  cart headers (title, MBC, CGB flag, RAM size) and presents a sortable,
-  searchable list with last-played tracking. Double-click to launch.
-- Save states (named slots).
-- Screenshots.
-- Fast-forward + slow-motion.
-- Configurable keyboard + gamepad.
-- Custom DMG palettes (4-shade picker).
+Point it at a folder of ROMs and faux-boy builds a searchable list — title,
+MBC, CGB flag, last played. Double-click to launch. No cover-art rabbit
+hole, just a fast picker.
 
-### Phase 2
+### Rewind
 
-- **Rewind.** Hold a button, scrub back through the last N seconds. Beyond
-  user value, it's a forcing function: rewind only works if save-state
-  serialization is bit-for-bit complete and deterministic — which is exactly
-  what the snapshot, replay, and reference-trace bisection machinery rely on.
-- **A/V recording.** PNG sequence / WAV / MP4 capture for demos and bug
-  reports.
+Hold a button, scrub back through the last few seconds. Life-saver for
+cruel old platformers — and sneaky correctness pressure on the rest of the
+emulator, since rewind only works if state serialization is actually
+bit-for-bit complete.
 
-Out of scope: shaders, LCD-grid effects, border art, per-game config.
+### A/V Recording
+
+Capture gameplay as a PNG sequence, WAV, or MP4. For demos, tweets, and bug
+reports where "look at this" beats "I swear there's a glitch."
 
 ## Test ROM Compliance
 
