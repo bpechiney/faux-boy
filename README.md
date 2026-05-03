@@ -15,14 +15,23 @@ sub-instruction timing exploits run the way they did on real silicon.
 
 ## Accuracy Goals
 
-- **T-cycle accurate.** Every component (CPU, PPU, APU, Timer, DMA) advances
-  per T-cycle (4.194304 MHz), interleaved correctly within a single
-  instruction.
-- **Pixel-FIFO PPU.** The PPU is modeled as a per-dot pixel FIFO — not a
-  scanline renderer — so mid-scanline writes to LCDC, SCX/SCY, and palettes
-  produce the correct visual output.
-- **Test-ROM driven.** Accuracy is validated against published hardware test
-  suites (see below), all run unattended in the harness.
+### T-Cycle Accurate
+
+Every component — CPU, PPU, APU, timer, DMA — advances one T-cycle at a
+time at 4.194304 MHz, correctly interleaved inside each instruction.
+Slow-but-faithful, not fast-and-fudged.
+
+### Pixel-FIFO PPU
+
+The PPU runs as a per-dot pixel FIFO, not a scanline renderer. That's what
+lets mid-scanline writes to LCDC, SCX/SCY, and palettes produce the same
+demoscene-grade tricks they do on real silicon.
+
+### Test-ROM Driven
+
+Accuracy isn't a vibe. Every claim gets validated against published
+hardware test suites (see the table below), all run unattended in the
+harness — pass/fail is data, not opinion.
 
 ## Hardware Scope
 
