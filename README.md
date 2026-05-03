@@ -35,12 +35,12 @@ harness — pass/fail is data, not opinion.
 
 ## Hardware Scope
 
-- **Phase 1 — DMG.** Original 1989 Game Boy. Primary target.
-- **Phase 2 — CGB (stretch).** Game Boy Color, including double-speed mode,
-  HDMA, and CGB palettes. Tackled once DMG is rock-solid.
-- **Phase 3 — link-cable peripherals (stretch).** Full two-instance + networked
-  link cable. Phase 1 ships a null-peer/loopback so games that probe the link
-  don't soft-lock; the lockstep scheduler for real link comes later.
+- **DMG.** Original 1989 Game Boy. The primary target.
+- **CGB (stretch).** Game Boy Color, including double-speed mode, HDMA, and
+  CGB palettes. Tackled once DMG is rock-solid.
+- **Link-cable peripherals (stretch).** Full two-instance + networked link
+  cable. A null-peer/loopback ships with the core so games that probe the
+  link don't soft-lock; the lockstep scheduler for real link comes later.
 - Out of scope: SGB, GBA, pocket variants.
 
 Roadmap detail lives in the project meta-issue (link TBD).
@@ -62,8 +62,8 @@ RTCs, rumble motors, tilt sensors. Plus the link port has its own ecosystem.
 | MBC5 | ≤8MB ROM / 128KB RAM | Optional **rumble motor**. Standard late-era controller — used in many DMG-compatible carts, not CGB-tied | Pokemon Pinball, Wario Land II, Donkey Kong Country |
 | MBC7 | 2MB ROM | 256-byte EEPROM + 2-axis **tilt sensor** (ADXL202) | Kirby Tilt 'n' Tumble |
 
-All Phase 1. HuC1 / HuC3 / MMM01 (rare third-party) and the Game Boy Camera
-cartridge are out of scope.
+All supported. HuC1 / HuC3 / MMM01 (rare third-party) and the Game Boy
+Camera cartridge are out of scope.
 
 ### Console & Peripherals
 
@@ -74,9 +74,9 @@ cartridge are out of scope.
 - **Game Boy Printer.** Receive-side serial protocol, decode the tile
   bitmap, write a PNG. Pokemon Yellow/Crystal Pokedex pages and stickers are
   golden-tested against reference output.
-- **Link cable.** Phase 1 ships a null-peer/loopback — the SB/SC registers
-  acknowledge cleanly so games that probe the link don't soft-lock.
-  Cycle-locked two-instance and networked link are Phase 3.
+- **Link cable.** A null-peer/loopback — the SB/SC registers acknowledge
+  cleanly so games that probe the link don't soft-lock. Cycle-locked
+  two-instance and networked link are stretch goals.
 
 ## User Experience
 
